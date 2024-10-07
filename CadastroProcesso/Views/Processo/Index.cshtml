@@ -1,0 +1,72 @@
+﻿@using CadastroProcessos.Models
+@model IEnumerable<ProcessoModel>
+
+<section>
+
+
+    <div class="d-flex justify-content-between align-items-center mb-5 mt-5">
+        <h1>Processos</h1>
+        <a class="btn btn-primary" asp-controller="Processo" asp-action="CadastroProcesso">Novo Processo</a>
+    </div>
+
+    <table id="ProcessosIdTable" class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Detalhes</th>
+                <th scope="col">Nome Processo</th>
+                <th scope="col">NPU</th>
+                <th scope="col">Data Cadastro</th>
+                <th scope="col">UF</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                @foreach (var processo in Model)
+                {
+                    <tr>
+                        <th>
+                            <a class="btn btn-primary" asp-controller="Processo" asp-action="DetalharProcesso"
+                                asp-route-processoId="@processo.ProcessoId">Detalhes</a>
+                        </th>
+                        <td scope="row">@processo.NomeProcesso</td>
+                        <td scope="row">@processo.Npu</td>
+                        <td>@processo.DataCadastro</td>
+                        <td>@processo.Uf</td>
+                        <td>
+                            <a class="btn btn-warning" asp-controller="Processo" asp-action="EditarProcesso"
+                                asp-route-processoId="@processo.ProcessoId">Editar</a>
+
+                            <a class="btn btn-danger" href="javascript:void(0);"
+                                onclick="confirmarExclusao('@processo.ProcessoId')">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+</section>
+
+@section Scripts {
+    <script>
+        async function confirmarExclusao(processoId) {
+            if (confirm('Deseja realmente excluir este processo?')) {
+                try {
+                    const response = await fetch('@Url.Action("ExcluirProcesso", "Processo")/' + processoId, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Erro ao excluir o processo.');
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    alert('Erro ao excluir o processo.');
+                }
+            }
+        }
+    </script>
+}

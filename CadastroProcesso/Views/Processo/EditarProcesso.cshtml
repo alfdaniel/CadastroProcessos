@@ -1,0 +1,56 @@
+@using CadastroProcessos.Models
+@model ProcessoModel
+@{
+    ViewData["Title"] = "Editar Processo";
+}
+
+<section>
+    <div>
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <form method="post" asp-controller="Processo" asp-action="EditarProcesso">
+        <div class="mb-3">
+            <label for="NomeProcesso" class="form-label">Nome Processo</label>
+            <input type="text" asp-for="NomeProcesso" class="form-control" id="NomeProcesso">
+            <span class="text-danger" asp-validation-for="NomeProcesso"></span>
+        </div>
+        <div class="mb-3">
+            <label for="Npu" class="form-label">NPU</label>
+            <input type="text" asp-for="Npu" class="form-control" id="Npu">
+            <span class="text-danger" asp-validation-for="Npu"></span>
+        </div>
+
+        <div class="d-flex gap-3">
+            <div class="dropdown mb-3">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Estado
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">PE</a></li>
+                    <li><a class="dropdown-item" href="#">PB</a></li>
+                    <li><a class="dropdown-item" href="#">SP</a></li>
+                </ul>
+            </div>
+
+            <div class="dropdown mb-3">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Municípios
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">PE</a></li>
+                    <li><a class="dropdown-item" href="#">PB</a></li>
+                    <li><a class="dropdown-item" href="#">SP</a></li>
+                </ul>
+            </div>
+
+
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">Editar</button>
+            <a class="btn btn-primary" asp-controller="Processo" asp-action="Index">Voltar</a>
+        </div>
+    </form>
+</section>
