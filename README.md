@@ -33,15 +33,17 @@ https://github.com/alfdaniel/CadastroProcessos/blob/master/CadastroProcesso/scri
 
 ## Configuração da Conexão com o Banco de Dados
 
-Antes de iniciar a aplicação, você precisa configurar a conexão com o banco de dados. Para isso, localize a seção `ConnectionStrings` no arquivo de configuração (appsettings.json) e insira o nome do seu servidor na string de conexão `DefaultConnection` no lugar `SEU_SERVIDOR`.
+Antes de iniciar a aplicação, você precisa configurar a conexão com o banco de dados. Para isso, localize a seção `ConnectionStrings` no arquivo de configuração (appsettings.Development.json) e insira o nome do seu servidor na string de conexão `DefaultConnection` no lugar `SEU_SERVIDOR`.
 
 ```json
 "ConnectionStrings": {
     "DefaultConnection": "Server=SEU_SERVIDOR;Database=Processos;Trusted_Connection=True;TrustServerCertificate=True"
 }
+```
 
 ## Rodando o projeto
 Após essas etapas entre no terminal da raiz do projeto e rode o comando
 
 ```bash
    dotnet run
+
