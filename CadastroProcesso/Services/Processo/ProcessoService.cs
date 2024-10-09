@@ -29,8 +29,7 @@ namespace CadastroProcessos.Services.Processo
             }
             catch (Exception)
             {
-                // throw new Exception(ProcessoMSG.ErroBuscarProcessos);
-                throw new Exception("Erro ao buscar processos");
+                throw new Exception(ProcessoMSG.ErroBuscarProcessos);
             }
         }
 

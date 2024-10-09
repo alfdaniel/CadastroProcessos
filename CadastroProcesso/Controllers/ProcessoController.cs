@@ -44,7 +44,7 @@ namespace CadastroProcessos.Controllers
                 ViewData["Estados"] = estados;
                 return View(processoModel);
             }
-            
+
             await _processoService.AdicionarProcesso(processoModel);
 
             TempData["Mensagem"] = ProcessoMSG.ProcessoAdicionadoSucesso;
@@ -71,11 +71,13 @@ namespace CadastroProcessos.Controllers
         [HttpGet]
         public async Task<IActionResult> EditarProcesso(Guid processoId)
         {
-            
-            var estados = await ObterEstados();
-            ViewData["Estados"] = estados;
             var processo = await _processoService.ObterProcessoId(processoId);
-
+            if (!ModelState.IsValid)
+            {
+                var estados = await ObterEstados();
+                ViewData["Estados"] = estados;
+                return View(processo);
+            }
             if (processo == null)
             {
                 return View("Index");
