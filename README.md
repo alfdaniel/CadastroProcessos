@@ -21,7 +21,6 @@ Antes de começar, verifique se você atende aos seguintes requisitos:
 
 ## Banco Sqlserver rode os script
 
-```bash
 BEGIN
     CREATE DATABASE Processos;
 END
