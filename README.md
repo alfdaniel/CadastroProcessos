@@ -28,7 +28,7 @@ Para configurar o banco de dados, você precisará executar os scripts fornecido
 3. Alternativamente, você pode acessar o script diretamente no repositório através do seguinte link: 
 https://github.com/alfdaniel/CadastroProcessos/blob/master/CadastroProcesso/script/setup.sql
      
-4. **Execute o Script**: Abra o SQL Server Management Studio (SSMS) e execute o script.
+4. **Execute o Script**: Abra o SQL Server Management Studio (SSMS) e execute o script, verifique se o database e a tabela foram criadas.
 
 
 ## Configuração da Conexão com o Banco de Dados
