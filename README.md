@@ -39,7 +39,11 @@ Antes de iniciar a aplicação, você precisa configurar a conexão com o banco 
 "ConnectionStrings": {
     "DefaultConnection": "Server=SEU_SERVIDOR;Database=Processos;Trusted_Connection=True;TrustServerCertificate=True"
 }
+```
 
 ## Rodando o projeto
 Após essas etapas entre no terminal da raiz do projeto e rode o comando
+
+```bash
+   dotnet run
 
