@@ -9,7 +9,6 @@ namespace CadastroProcessos.Models
     public class ProcessoDetalheViewModel
     {
         public Guid ProcessoId { get; set; }
-
         [Required(ErrorMessage = "Campo Obrigatório"), MaxLength(120)]
         public string? NomeProcesso { get; set; }
         [Required(ErrorMessage = "Campo Obrigatório.")]
