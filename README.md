@@ -21,7 +21,7 @@ Antes de começar, verifique se você atende aos seguintes requisitos:
 
 ## Banco Sqlserve
 Procure a pasta e o arquivo para encontrar os scripts do banco 
-   - setup/setup.sql
+   - script/setup.sql
 
 ## Configuração da Conexão com o Banco de Dados
 
