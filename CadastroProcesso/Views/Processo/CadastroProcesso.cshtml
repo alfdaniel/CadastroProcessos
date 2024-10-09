@@ -20,7 +20,7 @@
         </div>
         <div class="mb-3">
             <label for="Npu" class="form-label">NPU</label>
-            <input type="text" asp-for="Npu" class="form-control" id="NPU" placeholder="9999999-99.9999.9.99.9999">
+            <input type="text" asp-for="Npu" class="form-control" id="NPU">
             <span class="text-danger" asp-validation-for="Npu"></span>
         </div>
 
@@ -103,9 +103,11 @@
             document.getElementById('municipioId').value = id;
         }
 
-        @* $(document).ready(function () {
+        $(document).ready(function () {
             $('#NPU').inputmask('9999999-99.9999.9.99.9999');
-        }); *@
+            @* placeholder: '', // Remove o placeholder da máscara *@
+            @* clearIncomplete: true // Limpa a máscara se o usuário não completar *@
+        });
 
     </script>
 }
