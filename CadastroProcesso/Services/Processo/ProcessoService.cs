@@ -21,16 +21,8 @@ namespace CadastroProcessos.Services.Processo
 
         public async Task<IEnumerable<ProcessoListViewModel>> ObterTodosProcessos()
         {
-            try
-            {
-                var result = await _processoRepository.ObterTodosProcessos();
-                return _mapper.Map<IEnumerable<ProcessoListViewModel>>(result);
-
-            }
-            catch (Exception)
-            {
-                throw new Exception(ProcessoMSG.ErroBuscarProcessos);
-            }
+            var result = await _processoRepository.ObterTodosProcessos();
+            return _mapper.Map<IEnumerable<ProcessoListViewModel>>(result);
         }
 
         public async Task<Guid> AdicionarProcesso(ProcessoModel processo)
@@ -39,17 +31,7 @@ namespace CadastroProcessos.Services.Processo
             {
                 ProcessoModel processoModel;
 
-                if (processo.Npu == null)
-                {
-                    throw new Exception("NPU não pode ser nulo.");
-                }
-
                 processo.Npu = Regex.Replace(processo.Npu, @"\D", "");
-
-                if (processo.Npu.Length < 20)
-                {
-                    throw new Exception("NPU deve conter 20 caracteres.");
-                }
 
                 var id = Guid.NewGuid();
 
@@ -68,9 +50,9 @@ namespace CadastroProcessos.Services.Processo
                 await _processoRepository.AdicionarProcesso(processoModel);
                 return id;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception(ProcessoMSG.ErroAdicionarProcesso);
+                throw new Exception($"{ProcessoMSG.ErroAdicionarProcesso}: {ex.Message}", ex);
             }
         }
 
@@ -103,7 +85,7 @@ namespace CadastroProcessos.Services.Processo
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao atualizar Processo: {ex.Message}", ex);
+                throw new Exception($"{ProcessoMSG.ErroAtualizarProcesso}: {ex.Message}", ex);
             }
         }
 
@@ -133,10 +115,7 @@ namespace CadastroProcessos.Services.Processo
                     processo.Visualizado = true;
                     await _processoRepository.AtualizarProcesso(processo);
                 }
-                else
-                {
-                    throw new Exception(ProcessoMSG.ProcessoJaVisualizado);
-                }
+                return;
             }
             catch (Exception)
             {
