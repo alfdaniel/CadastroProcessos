@@ -43,5 +43,3 @@ Antes de iniciar a aplicação, você precisa configurar a conexão com o banco 
 ## Rodando o projeto
 Após essas etapas entre no terminal da raiz do projeto e rode o comando
 
-```bash
-   dotnet run
