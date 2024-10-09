@@ -1,5 +1,7 @@
-﻿using CadastroProcesso.Models;
+﻿using System.Text.RegularExpressions;
+using CadastroProcesso.Models;
 using CadastroProcesso.Services.IBGE;
+using CadastroProcesso.Services.Mensagens;
 using CadastroProcessos.Models;
 using CadastroProcessos.Services.Processo;
 using Microsoft.AspNetCore.Mvc;
@@ -11,18 +13,16 @@ namespace CadastroProcessos.Controllers
     {
         private readonly IProcessoService _processoService;
         private readonly IIbgeService _ibgeService;
-        // private readonly AppDbContext _context;
 
         public ProcessoController(IProcessoService processoService, IIbgeService ibgeService)
         {
-            // _context = context;
             _processoService = processoService;
             _ibgeService = ibgeService;
         }
 
         public async Task<IActionResult> Index()
         {
-            IEnumerable<ProcessoModel> processos = await _processoService.ObterTodosProcessos();
+            IEnumerable<ProcessoListViewModel> processos = await _processoService.ObterTodosProcessos();
             return View(processos);
         }
 
@@ -38,18 +38,17 @@ namespace CadastroProcessos.Controllers
         public async Task<IActionResult> CadastroProcesso(ProcessoModel processoModel)
         {
 
-            if (processoModel.Npu != null)
-            {
-                processoModel.Npu = processoModel.Npu.Replace(".", "").Replace("-", "").Replace("/", "").Replace("_", "");
-            }
-
             if (!ModelState.IsValid)
             {
                 var estados = await ObterEstados();
                 ViewData["Estados"] = estados;
                 return View(processoModel);
             }
+            
             await _processoService.AdicionarProcesso(processoModel);
+
+            TempData["Mensagem"] = ProcessoMSG.ProcessoAdicionadoSucesso;
+
             return RedirectToAction("Index");
         }
 
@@ -72,7 +71,11 @@ namespace CadastroProcessos.Controllers
         [HttpGet]
         public async Task<IActionResult> EditarProcesso(Guid processoId)
         {
+            
+            var estados = await ObterEstados();
+            ViewData["Estados"] = estados;
             var processo = await _processoService.ObterProcessoId(processoId);
+
             if (processo == null)
             {
                 return View("Index");
@@ -80,14 +83,14 @@ namespace CadastroProcessos.Controllers
             return View(processo);
         }
 
-        [HttpPut("Processo/EditarProcesso")]
+        [HttpPost]
         public async Task<IActionResult> EditarProcesso(ProcessoModel processoModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(processoModel);
-            }
+
             await _processoService.AtualizarProcesso(processoModel);
+
+            TempData["Mensagem"] = ProcessoMSG.ProcessoAtualizadoSucesso;
+
             return RedirectToAction("Index");
         }
 
@@ -108,6 +111,7 @@ namespace CadastroProcessos.Controllers
         public async Task<IActionResult> ConfirmaVizualizacao(Guid processoId)
         {
             await _processoService.ConfirmaVisualizacao(processoId);
+            TempData["Mensagem"] = "Processo visualizado com sucesso!";
             return Ok();
         }
 
@@ -122,7 +126,7 @@ namespace CadastroProcessos.Controllers
         public async Task<IActionResult> ObterMunicipios(string uf)
         {
             var municipios = await _ibgeService.BuscaMunicipiosUf(uf);
-            return Json(municipios);
+            return Ok(municipios);
         }
     }
 }

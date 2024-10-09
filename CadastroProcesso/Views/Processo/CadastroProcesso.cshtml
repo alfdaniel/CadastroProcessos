@@ -6,19 +6,21 @@
     var estados = ViewData["Estados"];
 }
 
-<section>
+<section class="mb-5 mt-5">
     <div>
-        <h1>@ViewData["Title"]</h1>
+        <h1 class="mb-4">@ViewData["Title"]</h1>
     </div>
+
     <form method="post" asp-controller="Processo" asp-action="CadastroProcesso">
         <div class="mb-3">
-            <label for="NomeProcesso" class="form-label">Nome Processo</label>
-            <input type="text" asp-for="NomeProcesso" class="form-control" id="NomeProcesso">
+            <label for="NomeProcesso" class="form-label">Nome do Processo</label>
+            <input type="text" asp-for="NomeProcesso" class="form-control" id="NomeProcesso"
+                placeholder="Novo Processo">
             <span class="text-danger" asp-validation-for="NomeProcesso"></span>
         </div>
         <div class="mb-3">
             <label for="Npu" class="form-label">NPU</label>
-            <input type="text" asp-for="Npu" class="form-control" id="NPU" placeholder="NPU 9999999-99.9999.9.99.9999">
+            <input type="text" asp-for="Npu" class="form-control" id="NPU" placeholder="9999999-99.9999.9.99.9999">
             <span class="text-danger" asp-validation-for="Npu"></span>
         </div>
 
@@ -33,7 +35,7 @@
                     @foreach (var estado in estados as IEnumerable<UfModel> ?? Enumerable.Empty<UfModel>())
                     {
                         <li>
-                            <a onclick="selecionaEstado('@estado.id', '@estado.nome')" value="@estado.id"
+                            <a onclick="selecionaEstado('@estado.id', '@estado.sigla')" value="@estado.id"
                                 class="dropdown-item">@estado.nome</a>
                         </li>
                     }
@@ -68,9 +70,11 @@
 @section Scripts {
     <script>
         var ufId;
-        function selecionaEstado(id, nome) {
-            document.getElementById('estadoSelecionado').value = nome;
+        function selecionaEstado(id, sigla) {
+            document.getElementById('estadoSelecionado').value = sigla;
             document.getElementById('estadoId').value = id;
+            document.getElementById('municipioSelecionado').value = '';
+            document.getElementById('municipioId').value = '';
             buscaMunicipios(id);
         }
 
@@ -99,10 +103,9 @@
             document.getElementById('municipioId').value = id;
         }
 
-        $(document).ready(function () {
+        @* $(document).ready(function () {
             $('#NPU').inputmask('9999999-99.9999.9.99.9999');
-        });
-
+        }); *@
 
     </script>
 }

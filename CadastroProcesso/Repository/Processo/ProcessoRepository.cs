@@ -16,6 +16,8 @@ namespace CadastroProcessos.Repository
 
         public async Task<IEnumerable<ProcessoModel>> ObterTodosProcessos()
         {
+
+            // return await _context.Processos.Take(5).Skip(0).ToListAsync(); 
             return await _context.Processos.ToListAsync();
         }
 

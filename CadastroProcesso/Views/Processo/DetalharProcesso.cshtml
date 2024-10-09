@@ -1,5 +1,5 @@
 @using CadastroProcessos.Models
-@model ProcessoModel
+@model ProcessoDetalheViewModel
 @{
     ViewData["Title"] = "Detalhes Processo";
 }
@@ -7,9 +7,26 @@
 <section>
     <div class="d-flex justify-content-between align-items-center mb-2 mt-2">
         <h1 class="my-5">@ViewData["Title"]</h1>
-        <button class="btn btn-primary" onclick="confirmarVizualizacao('@Model.ProcessoId')">Confirmar
-            Vizualização</button>
+        <button class="btn btn-primary" onclick="confirmarVisualizacao('@Model.ProcessoId')" @(Model.Visualizado ?
+            "disabled" : "")>
+            @if (Model.Visualizado)
+            {
+                <i class="bi bi-eye"></i>
+                <span>Documento Visualizado</span>
+            }
+            else
+            {
+                <i class="bi bi-eye-slash"></i>
+                <span>Visualizar documento</span>
+            }
+        </button>
     </div>
+    @if (TempData["Mensagem"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["Mensagem"]
+        </div>
+    }
     <div class="grid col-12">
         <div class="col-12 mb-4">
             <label for="NomeProcesso" class="form-label mb-0">Nome Processo</label>
@@ -18,7 +35,7 @@
         <div class="d-flex">
             <div class="col-5 mb-3">
                 <label for="Npu" class="form-label mb-0">NPU</label>
-                <p class="fw-bold fs-5">@Model.Npu</p>
+                <p class="fw-bold fs-5">@Model.NpuFormatado</p>
             </div>
             <div class="col-3 mb-3">
                 <label for="DataCadastro" class="form-label mb-0">Data Cadastro</label>
@@ -39,34 +56,64 @@
                 <p class="fw-bold fs-5">@Model.CodMunicipio</p>
             </div>
             <div class="col-3 mb-3">
-                <label for="DataVizualizacao" class="form-label mb-0">Data Vizualização</label>
-                <p class="fw-bold fs-5">@Model.DataVizualizacao</p>
+                <label for="DataVisualizacao" class="form-label mb-0">Data Visualização</label>
+                <p class="fw-bold fs-5">
+                    @if (!Model.Visualizado)
+                    {
+                        @:Documento não visualizado
+                    }
+                    else
+                    {
+                        @Model.DataVizualizacao
+                    }
+                </p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+
+        <a class="btn btn-primary" asp-controller="Processo" asp-action="Index">Voltar</a>
+        </div>
+    </div>
+
+
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmação</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Deseja realmente confirmar a visualização deste processo?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmButton">Confirmar</button>
+                </div>
             </div>
         </div>
     </div>
-</section>
 
-@section Scripts {
-    <script>
-        function confirmarVizualizacao(processoId) {
-            console.log('ProcessoId', processoId);
-
-            if (confirm('Deseja realmente confirmar a visualização deste processo?')) {
-                fetch('@Url.Action("ConfirmaVizualizacao", "Processo")/' + processoId, {
-                    method: 'PUT',
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('Processo visualizado com sucesso');
-                        } else {
-                            alert('Erro ao visualizar o processo');
-                        }
+    @section Scripts {
+        <script>
+            function confirmarVisualizacao(processoId) {
+                const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+                confirmModal.show();
+                document.getElementById('confirmButton').onclick = function () {
+                    fetch('@Url.Action("ConfirmaVizualizacao", "Processo")/' + processoId, {
+                        method: 'PUT',
                     })
-                    .catch(error => {
-                        console.error('Erro ao visualizar o processo', error);
-                        alert('Erro ao visualizar o processo');
-                    });
+                        .then(response => {
+                            if (response.ok) {
+            @* mostrarToast('Processo visualizado com sucesso', 'success'); *@
+                                    location.reload();
+                            } else {
+            @* mostrarToast('Erro ao visualizar o processo', 'danger'); *@
+                                        }
+                        });
+                    confirmModal.hide();
+                };
             }
-        }
-    </script>
-}
+        </script>
+    }

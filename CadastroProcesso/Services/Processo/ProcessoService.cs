@@ -1,3 +1,6 @@
+using System.Text.RegularExpressions;
+using AutoMapper;
+using CadastroProcesso.Services.Mensagens;
 using CadastroProcessos.Models;
 using CadastroProcessos.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -8,17 +11,28 @@ namespace CadastroProcessos.Services.Processo
     {
         private readonly IProcessoRepository _processoRepository;
 
-        public ProcessoService(IProcessoRepository processoRepository)
+        private readonly IMapper _mapper;
+
+        public ProcessoService(IProcessoRepository processoRepository, IMapper mapper)
         {
             _processoRepository = processoRepository;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ProcessoModel>> ObterTodosProcessos()
+        public async Task<IEnumerable<ProcessoListViewModel>> ObterTodosProcessos()
         {
-            var result = await _processoRepository.ObterTodosProcessos();
-            return result;
-        }
+            try
+            {
+                var result = await _processoRepository.ObterTodosProcessos();
+                return _mapper.Map<IEnumerable<ProcessoListViewModel>>(result);
 
+            }
+            catch (Exception)
+            {
+                // throw new Exception(ProcessoMSG.ErroBuscarProcessos);
+                throw new Exception("Erro ao buscar processos");
+            }
+        }
 
         public async Task<Guid> AdicionarProcesso(ProcessoModel processo)
         {
@@ -26,39 +40,51 @@ namespace CadastroProcessos.Services.Processo
             {
                 ProcessoModel processoModel;
 
+                if (processo.Npu == null)
+                {
+                    throw new Exception("NPU não pode ser nulo.");
+                }
+
+                processo.Npu = Regex.Replace(processo.Npu, @"\D", "");
+
+                if (processo.Npu.Length < 20)
+                {
+                    throw new Exception("NPU deve conter 20 caracteres.");
+                }
+
                 var id = Guid.NewGuid();
 
                 processoModel = new ProcessoModel
                 {
                     ProcessoId = id,
                     NomeProcesso = processo.NomeProcesso,
-                    Npu = processo.Npu != null ? processo.Npu.Replace(".", "").Replace("-", "").Replace("/", "").Replace("_", "") : string.Empty,
+                    Npu = processo.Npu,
                     Uf = processo.Uf,
                     Municipio = processo.Municipio,
                     CodMunicipio = processo.CodMunicipio,
+                    DataCadastro = DateTime.Now,
                     Visualizado = false
                 };
 
                 await _processoRepository.AdicionarProcesso(processoModel);
                 return id;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception($"Erro ao adicionar Processo: {ex.Message}", ex);
+                throw new Exception(ProcessoMSG.ErroAdicionarProcesso);
             }
         }
 
-        public Task<ProcessoModel> ObterProcessoId(Guid processoId)
+        public async Task<ProcessoDetalheViewModel> ObterProcessoId(Guid processoId)
         {
             try
             {
-                var processo = _processoRepository.ObterProcessoId(processoId);
-                return processo;
+                var processo = await _processoRepository.ObterProcessoId(processoId);
+                return _mapper.Map<ProcessoDetalheViewModel>(processo);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                throw new Exception($"Erro ao buscar Processo: {ex.Message}", ex);
+                throw new Exception(ProcessoMSG.ErroBuscarProcessoId);
             }
         }
 
@@ -66,7 +92,14 @@ namespace CadastroProcessos.Services.Processo
         {
             try
             {
-                var processo = await _processoRepository.ObterProcessoId(processoModel.ProcessoId) ?? throw new Exception("Processo não encontrado");
+                var processo = await _processoRepository.ObterProcessoId(processoModel.ProcessoId) ?? throw new Exception(ProcessoMSG.ProcessoNaoEncotrado);
+
+                processo.NomeProcesso = processoModel.NomeProcesso;
+                processo.Npu = processoModel.Npu;
+                processo.Uf = processoModel.Uf;
+                processo.Municipio = processoModel.Municipio;
+                processo.CodMunicipio = processoModel.CodMunicipio;
+
                 await _processoRepository.AtualizarProcesso(processo);
             }
             catch (Exception ex)
@@ -75,17 +108,16 @@ namespace CadastroProcessos.Services.Processo
             }
         }
 
-
         public async Task ExcluirProcesso(Guid processoId)
         {
             try
             {
-                var processo = await _processoRepository.ObterProcessoId(processoId) ?? throw new Exception("Processo não encontrado");
+                var processo = await _processoRepository.ObterProcessoId(processoId) ?? throw new Exception(ProcessoMSG.ProcessoNaoEncotrado);
                 await _processoRepository.RemoverProcesso(processoId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception($"Erro ao excluir Processo: {ex.Message}", ex);
+                throw new Exception(ProcessoMSG.ErroExcluirProcesso);
             }
         }
 
@@ -94,21 +126,22 @@ namespace CadastroProcessos.Services.Processo
             try
             {
                 var processo = await _processoRepository.ObterProcessoId(processoId)
-                               ?? throw new Exception("Processo não encontrado");
+                               ?? throw new Exception(ProcessoMSG.ProcessoNaoEncotrado);
 
-                if (!processo.Visualizado) // Corrigido de "Vizualizado" para "Visualizado"
+                if (!processo.Visualizado)
                 {
+                    processo.DataVizualizacao = DateTime.Now;
                     processo.Visualizado = true;
                     await _processoRepository.AtualizarProcesso(processo);
                 }
                 else
                 {
-                    throw new Exception("Processo já foi visualizado anteriormente.");
+                    throw new Exception(ProcessoMSG.ProcessoJaVisualizado);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception($"Erro ao confirmar visualização do Processo: {ex.Message}", ex);
+                throw new Exception(ProcessoMSG.ErroConfirmaVisualizacao);
             }
         }
 
