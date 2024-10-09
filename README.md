@@ -20,8 +20,9 @@ Antes de começar, verifique se você atende aos seguintes requisitos:
    cd nome-do-repositorio
 
 ## Banco Sqlserve
-Procure a pasta e o arquivo para encontrar os scripts do banco 
+Procure a pasta e o arquivo para encontrar os scripts do banco ou acesse o link: 
    - script/setup.sql
+https://github.com/alfdaniel/CadastroProcessos/blob/master/CadastroProcesso/script/setup.sql
 
 ## Configuração da Conexão com o Banco de Dados
 
