@@ -37,7 +37,7 @@ Antes de iniciar a aplicação, você precisa configurar a conexão com o banco 
 
 ```json
 "ConnectionStrings": {
-    "DefaultConnection": "Server=SEU_SERVIDOR;Database=Processos;Trusted_Connection=True;TrustServerCertificate=True"
+    "DefaultConnection": "Server=localhost;Database=Processos;Trusted_Connection=True;TrustServerCertificate=True"
 }
 ```
 
