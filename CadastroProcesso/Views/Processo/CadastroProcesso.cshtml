@@ -11,17 +11,20 @@
         <h1 class="mb-4">@ViewData["Title"]</h1>
     </div>
 
-    <form method="post" asp-controller="Processo" asp-action="CadastroProcesso">
+    @using (Html.BeginForm())
+    {   
+        @Html.AntiForgeryToken()
+
+    <div>
         <div class="mb-3">
-            <label for="NomeProcesso" class="form-label">Nome do Processo</label>
-            <input type="text" asp-for="NomeProcesso" class="form-control" id="NomeProcesso"
-                placeholder="Novo Processo">
-            <span class="text-danger" asp-validation-for="NomeProcesso"></span>
+            @Html.LabelFor(model => model.NomeProcesso, new { @class = "form-label" })
+            @Html.TextBoxFor(model => model.NomeProcesso, new { @class = "form-control", @id = "NomeProcesso" })
+            @Html.ValidationMessageFor(model => model.NomeProcesso, "", new { @class = "text-danger" })        
         </div>
         <div class="mb-3">
-            <label for="Npu" class="form-label">NPU</label>
-            <input type="text" asp-for="Npu" class="form-control" id="NPU" placeholder="9999999-99.9999.9.99.9999">
-            <span class="text-danger" asp-validation-for="Npu"></span>
+            @Html.LabelFor(model => model.Npu, new { @class = "form-label" })
+            @Html.TextBoxFor(model => model.Npu, new { @class = "form-control", @id = "NPU", @placeholder = "NPU 9999999-99.9999.9.99.9999" })
+            @Html.ValidationMessageFor(model => model.Npu, "", new { @class = "text-danger" })
         </div>
 
         <div class="pt-5">
@@ -64,7 +67,8 @@
             <button type="submit" class="btn btn-primary">Cadastrar</button>
             <a class="btn btn-primary" asp-controller="Processo" asp-action="Index">Voltar</a>
         </div>
-    </form>
+    </div>
+    }
 </section>
 
 @section Scripts {

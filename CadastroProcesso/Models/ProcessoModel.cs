@@ -8,7 +8,7 @@ namespace CadastroProcessos.Models
     {
         [Key]
         public Guid ProcessoId { get; set; }
-        [Required(ErrorMessage = "Campo Obrigatório"), MaxLength(120)]
+        [Required(ErrorMessage = "O nome do Processo é Obrigatório"), MaxLength(120)]
         public string? NomeProcesso { get; set; }
         [Required(ErrorMessage = "Campo Obrigatório.")]
         [CustomValidation(typeof(ProcessoModel), nameof(ValidateNpu))]

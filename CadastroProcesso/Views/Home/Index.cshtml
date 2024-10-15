@@ -3,10 +3,16 @@
 }
 
 <div class="text-center">
+    @if (TempData["Mensagem"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["Mensagem"]
+        </div>
+    }
     <h1 class="display-4">Bem vindo!</h1>
     <p>Esse é o sistema de cadastro de processos.</p>
     <div>
-    <a class="btn btn-primary" asp-area="" asp-controller="Processo" asp-action="CadastroProcesso">Novo Processo</a>
-    <a class="btn btn-primary" asp-area="" asp-controller="Processo" asp-action="Index">Lista Processos</a>
+        <a class="btn btn-primary" asp-area="" asp-controller="Processo" asp-action="CadastroProcesso">Novo Processo</a>
+        <a class="btn btn-primary" asp-area="" asp-controller="Processo" asp-action="Index">Lista Processos</a>
     </div>
 </div>

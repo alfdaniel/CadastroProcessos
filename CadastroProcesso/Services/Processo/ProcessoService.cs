@@ -4,6 +4,8 @@ using CadastroProcesso.Services.Mensagens;
 using CadastroProcessos.Models;
 using CadastroProcessos.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace CadastroProcessos.Services.Processo
 {
@@ -12,11 +14,13 @@ namespace CadastroProcessos.Services.Processo
         private readonly IProcessoRepository _processoRepository;
 
         private readonly IMapper _mapper;
+        // private readonly ILogger _logger;
 
         public ProcessoService(IProcessoRepository processoRepository, IMapper mapper)
         {
             _processoRepository = processoRepository;
             _mapper = mapper;
+            // _logger = logger;
         }
 
         public async Task<IEnumerable<ProcessoListViewModel>> ObterTodosProcessos()

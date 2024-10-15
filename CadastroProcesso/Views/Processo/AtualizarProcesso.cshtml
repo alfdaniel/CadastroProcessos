@@ -1,0 +1,117 @@
+@using CadastroProcessos.Models
+@model ProcessoDetalheViewModel
+
+@{
+    ViewData["title"] = "Editar de Processo";
+    var estados = ViewData["Estados"];
+}
+
+<section class="mb-5 mt-5">
+    <div>
+        <h1 class="mb-4">@ViewData["Title"]</h1>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div asp-route-processoId="@Model.ProcessoId">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="mb-3">
+                <label for="NomeProcesso" class="form-label">Nome Processo</label>
+                <input type="text" asp-for="NomeProcesso" class="form-control" id="NomeProcesso">
+                <span class="text-danger" asp-validation-for="NomeProcesso"></span>
+            </div>
+            <div class="mb-3">
+                <label for="Npu" class="form-label">NPU</label>
+                <input type="text" asp-for="Npu" class="form-control" id="NPU" placeholder="NPU 9999999-99.9999.9.99.9999">
+                <span class="text-danger" asp-validation-for="Npu"></span>
+            </div>
+
+            <div class="pt-5">
+                <div class="d-flex gap-3 dropdown mb-3">
+                    <button style="width: 200px" class="btn btn-secondary dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Estado
+                    </button>
+
+                    <ul id="estadoDropdown" class="dropdown-menu">
+                        @foreach (var estado in estados as IEnumerable<UfModel> ?? Enumerable.Empty<UfModel>())
+                        {
+                            <li>
+                                <a onclick="selecionaEstado('@estado.id', '@estado.sigla')" value="@estado.id"
+                                    class="dropdown-item">@estado.nome</a>
+                            </li>
+                        }
+                    </ul>
+
+                    <input asp-for="Uf" type="text" id="estadoSelecionado" class="form-control" readonly
+                        placeholder="UF Selecionada" />
+                    <input type="hidden" id="estadoId" name="EstadoId" />
+                    <span class="text-danger" asp-validation-for="Uf"></span>
+                </div>
+
+                <div class="d-flex dropdown mb-3 gap-3">
+                    <button style="width: 200px" class="btn btn-secondary dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Municípios
+                    </button>
+                    <ul id="municipiosDropdown" class="dropdown-menu"></ul>
+                    <input asp-for="Municipio" type="text" id="municipioSelecionado" class="form-control" readonly
+                        placeholder="Municipio Selecionado" />
+                    <input asp-for="CodMunicipio" type="hidden" id="municipioId" />
+                    <span class="text-danger" asp-validation-for="CodMunicipio"></span>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Editar</button>
+                <a class="btn btn-primary" asp-controller="Processo" asp-action="Index">Voltar</a>
+            </div>
+        </div>
+    }
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        var ufId;
+        function selecionaEstado(id, sigla) {
+            document.getElementById('estadoSelecionado').value = sigla;
+            document.getElementById('estadoId').value = id;
+            const municipiosDropdown = document.getElementById('municipiosDropdown');
+            document.getElementById('municipioSelecionado').value = '';
+            document.getElementById('municipioId').value = '';
+            buscaMunicipios(id);
+
+        }
+
+        async function buscaMunicipios(ufId) {
+            try {
+                const response = await fetch('@Url.Action("ObterMunicipios", "Processo")/' + ufId, {
+                    method: 'GET'
+                });
+                if (response.ok) {
+                    const municipios = await response.json();
+                    const municipiosDropdown = document.getElementById('municipiosDropdown');
+                    municipiosDropdown.innerHTML = '';
+                    municipios.forEach(municipio => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<a class="dropdown-item" href="#" onclick="selecionarMunicipio(${municipio.id}, '${municipio.nome}')">${municipio.nome}</a>`;
+                        municipiosDropdown.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao buscar municípios', error);
+            }
+        }
+
+        async function selecionarMunicipio(id, nome) {
+            document.getElementById('municipioSelecionado').value = nome;
+            document.getElementById('municipioId').value = id;
+        }
+    </script>
+}
