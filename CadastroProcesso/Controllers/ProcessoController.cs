@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using CadastroProcesso.Models;
+﻿using CadastroProcesso.Models;
 using CadastroProcesso.Services.IBGE;
 using CadastroProcesso.Services.Mensagens;
 using CadastroProcessos.Models;
@@ -22,9 +21,12 @@ namespace CadastroProcessos.Controllers
 
         public async Task<IActionResult> Index()
         {
-            IEnumerable<ProcessoListViewModel> processos = await _processoService.ObterTodosProcessos();
+
+            var processos = await _processoService.ObterTodosProcessos();
             return View(processos);
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> CadastroProcesso()
@@ -35,6 +37,7 @@ namespace CadastroProcessos.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CadastroProcesso(ProcessoModel processoModel)
         {
 
@@ -69,29 +72,23 @@ namespace CadastroProcessos.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditarProcesso(Guid processoId)
+        public async Task<IActionResult> AtualizarProcesso(Guid processoId)
         {
             var processo = await _processoService.ObterProcessoId(processoId);
-            if (!ModelState.IsValid)
-            {
-                var estados = await ObterEstados();
-                ViewData["Estados"] = estados;
-                return View(processo);
-            }
-            if (processo == null)
-            {
-                return View("Index");
-            }
+            var estados = await ObterEstados();
+            ViewData["Estados"] = estados;
             return View(processo);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditarProcesso(ProcessoModel processoModel)
+        public async Task<IActionResult> AtualizarProcesso(ProcessoModel processoModel)
         {
-
-            await _processoService.AtualizarProcesso(processoModel);
-
-            TempData["Mensagem"] = ProcessoMSG.ProcessoAtualizadoSucesso;
+            if (ModelState.IsValid)
+            {
+                await _processoService.AtualizarProcesso(processoModel);
+                TempData["Mensagem"] = ProcessoMSG.ProcessoAtualizadoSucesso;
+                return RedirectToAction("Index");
+            }
 
             return RedirectToAction("Index");
         }

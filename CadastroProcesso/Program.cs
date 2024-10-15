@@ -1,3 +1,4 @@
+using CadastroProcesso.Middleware;
 using CadastroProcesso.Services.IBGE;
 using CadastroProcessos.Data;
 using CadastroProcessos.Repository;
@@ -31,6 +32,8 @@ if (!app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

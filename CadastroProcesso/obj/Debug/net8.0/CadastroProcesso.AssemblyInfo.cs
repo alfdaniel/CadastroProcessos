@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CadastroProcesso")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+afe4eaf8f81554d2c57766d70bc4fec3501c3d0f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f4419b034e6410643af74f5430dbadf8a8f58149")]
 [assembly: System.Reflection.AssemblyProductAttribute("CadastroProcesso")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CadastroProcesso")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
