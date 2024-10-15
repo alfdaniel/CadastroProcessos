@@ -21,22 +21,9 @@ namespace CadastroProcessos.Controllers
 
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                var processos = await _processoService.ObterTodosProcessos();
 
-                if (processos == null || !processos.Any())
-                {
-                    TempData["Mensagem"] = ProcessoMSG.ErroBuscarProcessos;
-                    return View(new List<ProcessoListViewModel>());
-                }
-                return View(processos);
-            }
-            catch (Exception ex)
-            {
-                TempData["MensagemErro"] = ProcessoMSG.ErroBuscarProcessos;
-                return View(new List<ProcessoListViewModel>());
-            }
+            var processos = await _processoService.ObterTodosProcessos();
+            return View(processos);
         }
 
 
